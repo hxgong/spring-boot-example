@@ -21,25 +21,23 @@ class PersonController {
         new ResponseEntity<List<Person>>(repository.findAll(), HttpStatus.OK)
     }
 
+
     @RequestMapping("/person/find/{name}")
     @ResponseBody
     ResponseEntity<Person> find(@PathVariable String name) {
         def person = repository.findByName(name)
         if(!person)
             throw new Exception("Person not found: $name")
-
         new ResponseEntity<Person>(person, HttpStatus.OK)
     }
 
     @RequestMapping("/person/add/{name}")
     @ResponseBody
     ResponseEntity<Person> add(@PathVariable String name) {
-        if(repository.findByName(name))
-            throw new Exception("Person $name already exists")
-
-        def person = repository.save(new Person(name: name))
-        if(!person)
-            throw new Exception("Person not created: $name")
+        def person = repository.findByName(name)
+        if(!person) {
+            person = repository.save(new Person(name: name))
+        }
         new ResponseEntity<Person>(person, HttpStatus.OK)
     }
 
